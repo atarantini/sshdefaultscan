@@ -8,6 +8,10 @@ Use **sshdefaultscan** to scan networks or hosts for SSH servers, try to connect
 using some default username and password. It uses `Nmap`_ to provide easy and
 powerfull target selection and `Paramiko`_ to test credentials.
 
+.. contents::
+    :local:
+    :depth: 1
+    :backlinks: none
 
 Usage
 -----

@@ -11,24 +11,24 @@ from time import time
 import nmap
 import paramiko
 
-SSH_DEFAULT_USERNAME = "root"
-SSH_DEFAULT_PASSWORD = "root"
+SSH_DEFAULT_USERNAME = 'root'
+SSH_DEFAULT_PASSWORD = 'root'
 
 #
 # Main
 #
-if __name__ == "__main__":
+if __name__ == '__main__':
     ###########################################################################
     # Bootstrap
     #
 
     # Parse command line arguments
     parser = argparse.ArgumentParser(description='Scan networks for SSH servers with default username and password.')
-    parser.add_argument(
-        'hosts',
-        help='An IP address for a hostname or network, ex: 192.168.1.1 for single host or 192.168.1.1-254 for network'
-    )
+    parser.add_argument('hosts', help='An IP address for a hostname or network, ex: 192.168.1.1 for single host or 192.168.1.1-254 for network')
+    parser.add_argument('-u', '--username', help='Set username, default is "root"', default=SSH_DEFAULT_USERNAME)
+    parser.add_argument('-p', '--password', help='Set password, default is "root"', default=SSH_DEFAULT_PASSWORD)
     args = parser.parse_args()
+    print args
 
     # Setup logging
     logger = logging.getLogger('sshdefaultscan')
@@ -46,13 +46,13 @@ if __name__ == "__main__":
     ###########################################################################
     # Scan
     #
-    logger.debug("Scanning...")
+    logger.debug('Scanning...')
     hosts = list()
     nm = nmap.PortScanner()
     scan = nm.scan(args.hosts, '22')
     stats = scan.get('nmap').get('scanstats')
     logger.debug(
-        "{up} Up + {down} Down = {total} in {elapsed_time}s".format(
+        '{up} Up + {down} Down = {total} in {elapsed_time}s'.format(
             up=stats.get('uphosts'),
             down=stats.get('downhosts'),
             total=stats.get('totalhosts'),
@@ -62,16 +62,16 @@ if __name__ == "__main__":
     for host, data in list(scan.get('scan').items()):
         if data.get('tcp') and data.get('tcp').get(22).get('state') == 'open':
             hosts.append(host)
-            logger.debug("{host} Seems to have SSH open".format(host=host))
+            logger.debug('{host} Seems to have SSH open'.format(host=host))
 
     if not hosts:
-        logger.debug("No hosts found with port 22 open.")
+        logger.debug('No hosts found with port 22 open.')
         exit()
 
     ###########################################################################
     # Test credentials
     #
-    logging.debug("Testing credentials...")
+    logging.debug('Testing credentials...')
     for host in hosts:
         start_time = time()
         ssh = paramiko.SSHClient()
@@ -79,10 +79,10 @@ if __name__ == "__main__":
         try:
             ssh.connect(
                 host,
-                username=SSH_DEFAULT_USERNAME,
-                password=SSH_DEFAULT_PASSWORD
+                username=args.username,
+                password=args.password
             )
-            logger.info("{host} Logged in with {username}:{password} in {elapsed_time}s".format(
+            logger.info('{host} Logged in with {username}:{password} in {elapsed_time}s'.format(
                 host=host,
                 username=SSH_DEFAULT_USERNAME,
                 password=SSH_DEFAULT_PASSWORD,
@@ -92,7 +92,7 @@ if __name__ == "__main__":
             paramiko.ssh_exception.AuthenticationException,
             paramiko.ssh_exception.SSHException
         ) as e:
-            logger.debug("{host} {exception} ({elapsed_time}s)".format(
+            logger.debug('{host} {exception} ({elapsed_time}s)'.format(
                 host=host,
                 exception=e,
                 elapsed_time=round(time() - start_time, 2)

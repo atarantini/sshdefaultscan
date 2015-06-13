@@ -93,13 +93,19 @@ do all the work:
 
     $ sudo apt-get install nmap
 
-On OSX you can try:
+On OSX you can install with Homebrew or macports:
 
 .. code-block:: bash
 
     $ brew install nmap
 
-Once you have it installed, install dependencies from the ``requirements.txt``
+or
+
+.. code-block:: bash
+
+    $ port install nmap
+
+Once you have `Nmap`_ installed, install dependencies from the ``requirements.txt``
 file using ``pip``:
 
 .. code-block:: bash
@@ -129,6 +135,14 @@ your own network or with permission from the network owner. I'm not responsible
 of what actions people decide to take using this software. I'm not not
 responsible if someone do something against the law using this sofware. Please
 be good and don't do anything harmful.
+
+
+Changelog
+---------
+
+* 0.1.2 - 2015-06-13: Added --fast parameter to allow faster scans reducing timeouts (`T5 Nmap templat <http://nmap.org/book/man-performance.html>`_).
+* 0.1.1 - 2015-06-08: Added --username and --password parameters to set default username and password.
+* 0.1.0 - 2015-06-07: Initial release.
 
 
 Author

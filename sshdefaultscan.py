@@ -27,8 +27,8 @@ if __name__ == '__main__':
     parser.add_argument('hosts', help='An IP address for a hostname or network, ex: 192.168.1.1 for single host or 192.168.1.1-254 for network')
     parser.add_argument('-u', '--username', help='Set username, default is "root"', default=SSH_DEFAULT_USERNAME)
     parser.add_argument('-p', '--password', help='Set password, default is "root"', default=SSH_DEFAULT_PASSWORD)
+    parser.add_argument('--fast', help='Change timeout settings for the scanner in order to scan faster (T5)', default=False, action='store_true')
     args = parser.parse_args()
-    print args
 
     # Setup logging
     logger = logging.getLogger('sshdefaultscan')
@@ -48,13 +48,15 @@ if __name__ == '__main__':
     #
     logger.debug('Scanning...')
     hosts = list()
+    arguments = ''
+    if args.fast:
+        arguments += '-T5'
     nm = nmap.PortScanner()
-    scan = nm.scan(args.hosts, '22')
+    scan = nm.scan(args.hosts, '22', arguments=arguments)
     stats = scan.get('nmap').get('scanstats')
     logger.debug(
-        '{up} Up + {down} Down = {total} in {elapsed_time}s'.format(
+        '{up} hosts up, {total} total. Scaned in {elapsed_time}s'.format(
             up=stats.get('uphosts'),
-            down=stats.get('downhosts'),
             total=stats.get('totalhosts'),
             elapsed_time=stats.get('elapsed')
         )

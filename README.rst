@@ -140,9 +140,14 @@ be good and don't do anything harmful.
 Changelog
 ---------
 
-* ``0.1.2`` (2015-06-13) Added --fast parameter to allow faster scans reducing timeouts (`T5 Nmap templat <http://nmap.org/book/man-performance.html>`_).
-* ``0.1.1`` (2015-06-08): Added --username and --password parameters to set default username and password.
-* ``0.1.0`` (2015-06-07) Initial release.
+``0.1.2`` - 2015-06-13
+    * Added --fast parameter to allow faster scans reducing timeouts (`T5 Nmap template <http://nmap.org/book/man-performance.html>`_).
+
+``0.1.1`` - 2015-06-08
+    * Added --username and --password parameters to set default username and password.
+
+``0.1.0`` - 2015-06-07
+    * Initial release.
 
 
 Author

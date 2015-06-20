@@ -140,6 +140,9 @@ be good and don't do anything harmful.
 Changelog
 ---------
 
+``0.1.3`` - 2015-06-19
+    * Fixed logger: was using default username and password, now is using the ones sent by the user.
+
 ``0.1.2`` - 2015-06-13
     * Added --fast parameter to allow faster scans reducing timeouts (`T5 Nmap template <http://nmap.org/book/man-performance.html>`_).
 

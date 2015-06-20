@@ -86,8 +86,8 @@ if __name__ == '__main__':
             )
             logger.info('{host} Logged in with {username}:{password} in {elapsed_time}s'.format(
                 host=host,
-                username=SSH_DEFAULT_USERNAME,
-                password=SSH_DEFAULT_PASSWORD,
+                username=args.username,
+                password=args.password,
                 elapsed_time=round(time() - start_time, 2)
             ))
         except (

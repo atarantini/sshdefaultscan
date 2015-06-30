@@ -53,7 +53,7 @@ if __name__ == '__main__':
     scan = nm.scan(args.hosts, '22', arguments=nmap_arguments)
     stats = scan.get('nmap').get('scanstats')
     logger.debug(
-        '{up} hosts up, {total} total. Scaned in {elapsed_time}s'.format(
+        '{up} hosts up, {total} total in {elapsed_time}s'.format(
             up=stats.get('uphosts'),
             total=stats.get('totalhosts'),
             elapsed_time=stats.get('elapsed')

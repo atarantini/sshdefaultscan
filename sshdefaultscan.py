@@ -48,11 +48,9 @@ if __name__ == '__main__':
     #
     logger.debug('Scanning...')
     hosts = list()
-    arguments = ''
-    if args.fast:
-        arguments += '-T5'
+    nmap_arguments = '' if not args.fast else '-T5'
     nm = nmap.PortScanner()
-    scan = nm.scan(args.hosts, '22', arguments=arguments)
+    scan = nm.scan(args.hosts, '22', arguments=nmap_arguments)
     stats = scan.get('nmap').get('scanstats')
     logger.debug(
         '{up} hosts up, {total} total. Scaned in {elapsed_time}s'.format(

@@ -71,7 +71,7 @@ if __name__ == '__main__':
     ###########################################################################
     # Test credentials
     #
-    logging.debug('Testing credentials...')
+    logger.debug('Testing credentials...')
     for host in hosts:
         start_time = time()
         ssh = paramiko.SSHClient()

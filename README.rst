@@ -10,7 +10,7 @@ powerfull target selection and `Paramiko`_ to test credentials.
 
 .. contents::
     :local:
-    :depth: 1
+    :depth: 2
     :backlinks: none
 
 Usage
@@ -23,18 +23,18 @@ Scan your own machine:
     $ python sshdefaultscan.py 127.0.0.1
 
     2015-06-08 21:16:57,711 - sshdefaultscan - DEBUG - Scanning...
-    2015-06-08 21:17:03,892 - sshdefaultscan - DEBUG - 1 Up + 0 Down = 1 in 6.16s
+    2015-06-08 21:17:03,892 - sshdefaultscan - DEBUG - 1 hosts up, 1 total in 0.28s
     2015-06-08 21:17:03,892 - sshdefaultscan - DEBUG - 127.0.0.1 Seems to have SSH open
     2015-06-08 21:17:06,001 - sshdefaultscan - INFO - 127.0.0.1 Logged in with root:root in 2.11s
 
-You local network:
+You local network, with ``--fast`` to improve speed:
 
 .. code-block:: bash
 
-    $ python sshdefaultscan.py 192.168.1.1-254
+    $ python sshdefaultscan.py --fast 192.168.1.1-254
 
     2015-06-08 21:21:59,408 - sshdefaultscan - DEBUG - Scanning...
-    2015-06-08 21:22:08,807 - sshdefaultscan - DEBUG - 3 Up + 251 Down = 254 in 9.38s
+    2015-06-08 21:22:08,807 - sshdefaultscan - DEBUG - 1 hosts up, 254 total in 3.38s
     2015-06-08 21:22:08,808 - sshdefaultscan - DEBUG - 192.168.1.42 Seems to have SSH open
     2015-06-08 21:22:11,463 - sshdefaultscan - DEBUG - 192.168.1.42 Authentication failed. (2.65s)
 
@@ -45,7 +45,7 @@ Different username or password:
     $ python sshdefaultscan.py --username admin --password 1234 192.168.1.1-254
 
     2015-06-08 21:21:59,408 - sshdefaultscan - DEBUG - Scanning...
-    2015-06-08 21:22:08,807 - sshdefaultscan - DEBUG - 3 Up + 251 Down = 254 in 3.11s
+    2015-06-08 21:22:08,807 - sshdefaultscan - DEBUG - 3 hosts up, 254 total in 3.11s
     2015-06-08 21:22:08,808 - sshdefaultscan - DEBUG - 192.168.1.42 Seems to have SSH open
     2015-06-08 21:22:11,463 - sshdefaultscan - INFO - 192.168.1.42  Logged in with admin:1234 in 0.98s
 
@@ -56,7 +56,7 @@ Or a much bigger network segment:
     $ python sshdefaultscan.py 192.168.99-110.1-254
 
     2015-06-08 21:24:47,177 - sshdefaultscan - DEBUG - Scanning...
-    2015-06-08 21:25:16,035 - sshdefaultscan - DEBUG - 127 Up + 2921 Down = 3048 in 28.75s
+    2015-06-08 21:25:16,035 - sshdefaultscan - DEBUG - 127 hosts up, 3048 total in 28.75s
     2015-06-08 21:25:16,035 - sshdefaultscan - DEBUG - 192.168.109.60 Seems to have SSH open
     2015-06-08 21:25:16,035 - sshdefaultscan - DEBUG - 192.168.110.182 Seems to have SSH open
     2015-06-08 21:25:16,035 - sshdefaultscan - DEBUG - 192.168.110.184 Seems to have SSH open
@@ -82,6 +82,7 @@ All the stuff:
       -p PASSWORD, --password PASSWORD
                             Set password, default is "root"
       --fast                Change timeout settings for the scanner in order to scan faster (T5)
+      --batch               Output only hosts, handy to use with unix pipes.
 
 Install
 -------
@@ -115,8 +116,11 @@ file using ``pip``:
 If the project get some stars, I will upload it to the `The Python Package Index`_.
 
 
+Other features
+--------------
+
 Logging
--------
+^^^^^^^
 
 All important information is stored in ``sshdefaultscan.log``:
 
@@ -126,28 +130,64 @@ All important information is stored in ``sshdefaultscan.log``:
     2015-06-05 22:08:13,660 - sshdefaultscan - INFO - 192.100.100.166 Logged in with root:root in 13.99s
     2015-06-08 21:19:46,295 - sshdefaultscan - INFO - 10.0.1.170 Logged in with root:root in 14.26s
 
+Batch mode
+^^^^^^^^^^
 
-Disclamer
----------
+If you want to combine ``sshdefaultscan`` with other tools or make reports, you
+can use the ``--batch`` option. When running in batch mode, ``sshdefaultscan``
+will print results to stdout and will suppress logging in the terminal (logging
+into file will not be disabled by this option).
+
+.. code-block:: bash
+
+    $ python sshdefaultscan.py --batch 10.0.1-254.1-254
+    10.0.3.2
+    10.0.3.9
+    10.0.100.24
+    10.0.211.19
+
+Use it with other tools, let's see the latency with this hosts using ``ping``:
+
+.. code-block:: bash
+
+    $ python sshdefaultscan.py --batch 10.0.3.1-254 | xargs -n 1 ping -c 1 | grep icmp_
+    64 bytes from 10.0.3.2: icmp_seq=1 ttl=50 time=24 ms
+    64 bytes from 10.0.3.9: icmp_seq=1 ttl=50 time=26 ms
+
+Get hostname from an IP address using ``host``:
+
+.. code-block:: bash
+
+    $ python sshdefaultscan.py --batch 192.168.1.1-254 | xargs -n 1 host
+    1.1.168.192.in-addr.arpa domain name pointer ROUTER.
+    11.1.168.192.in-addr.arpa domain name pointer hostA.
+    16.1.168.192.in-addr.arpa domain name pointer android-67d82275b133e285
+
+
+Disclaimer
+----------
 
 This software is provided for educational purposes and testing only: use it in
 your own network or with permission from the network owner. I'm not responsible
-of what actions people decide to take using this software. I'm not not
-responsible if someone do something against the law using this sofware. Please
-be good and don't do anything harmful.
+of what actions people decide to take using this software. I'm not not responsible
+if someone do something against the law using this software. Please be good and
+don't do anything harmful :)
 
 
 Changelog
 ---------
 
+``0.2.0`` - 2015-06-30
+    * Batch mode can be used with the ``--batch`` option.
+
 ``0.1.3`` - 2015-06-19
     * Fixed logger: was using default username and password, now is using the ones sent by the user.
 
 ``0.1.2`` - 2015-06-13
-    * Added --fast parameter to allow faster scans reducing timeouts (`T5 Nmap template <http://nmap.org/book/man-performance.html>`_).
+    * Added ``--fast`` parameter to allow faster scans reducing timeouts (`T5 Nmap template <http://nmap.org/book/man-performance.html>`_).
 
 ``0.1.1`` - 2015-06-08
-    * Added --username and --password parameters to set default username and password.
+    * Added ``--username`` and ``--password`` parameters to set default username and password.
 
 ``0.1.0`` - 2015-06-07
     * Initial release.
@@ -162,7 +202,7 @@ Andres Tarantini (atarantini@gmail.com)
 License
 -------
 
-Released under GNU GPLv3, see COPYING file for more details.
+Released under GNU GPLv3, see `COPYING <https://github.com/atarantini/sshdefaultscan/blob/master/COPYING>`_ file for more details.
 
 .. _Nmap: http://nmap.org/
 .. _Paramiko: http://www.paramiko.org/

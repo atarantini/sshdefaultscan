@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 """
 sshdefaultscan
 
@@ -14,6 +14,26 @@ import paramiko
 SSH_DEFAULT_USERNAME = 'root'
 SSH_DEFAULT_PASSWORD = 'root'
 
+
+def out(hostname, username, password, template="{host}"):
+    """
+    Return a string to be used as output when "--batch" mode is enabled
+
+    :param hostname:    String with the hostname
+    :param username:    String with the username
+    :param password:    String with the password
+    :param template:    String with a template, defaults to "{host}" [1]
+
+    :return:    String to be used as output
+
+    [1] See https://docs.python.org/2/library/string.html#formatstrings
+    """
+    return template.format(
+        host=hostname,
+        username=username,
+        password=password
+    )
+
 #
 # Main
 #
@@ -24,10 +44,11 @@ if __name__ == '__main__':
 
     # Parse command line arguments
     parser = argparse.ArgumentParser(description='Scan networks for SSH servers with default username and password.')
-    parser.add_argument('hosts', help='An IP address for a hostname or network, ex: 192.168.1.1 for single host or 192.168.1.1-254 for network')
-    parser.add_argument('-u', '--username', help='Set username, default is "root"', default=SSH_DEFAULT_USERNAME)
-    parser.add_argument('-p', '--password', help='Set password, default is "root"', default=SSH_DEFAULT_PASSWORD)
-    parser.add_argument('--fast', help='Change timeout settings for the scanner in order to scan faster (T5)', default=False, action='store_true')
+    parser.add_argument('hosts', help='An IP address for a hostname or network, ex: 192.168.1.1 for single host or 192.168.1.1-254 for network.')
+    parser.add_argument('-u', '--username', help='Set username, default is "root".', default=SSH_DEFAULT_USERNAME)
+    parser.add_argument('-p', '--password', help='Set password, default is "root".', default=SSH_DEFAULT_PASSWORD)
+    parser.add_argument('--fast', help='Change timeout settings for the scanner in order to scan faster (T5).', default=False, action='store_true')
+    parser.add_argument('--batch', help='Output only hosts, handy to use with unix pipes.', default=False, action='store_true')
     args = parser.parse_args()
 
     # Setup logging
@@ -37,25 +58,26 @@ if __name__ == '__main__':
     file_handler = logging.FileHandler('sshdefaultscan.log')
     file_handler.setLevel(logging.INFO)
     file_handler.setFormatter(formatter)
-    console_handler = logging.StreamHandler()
-    console_handler.setLevel(logging.DEBUG)
-    console_handler.setFormatter(formatter)
     logger.addHandler(file_handler)
-    logger.addHandler(console_handler)
+    if args.batch:
+        logger.setLevel(logging.INFO)
+    else:
+        console_handler = logging.StreamHandler()
+        console_handler.setLevel(logging.DEBUG)
+        console_handler.setFormatter(formatter)
+        logger.addHandler(console_handler)
 
     ###########################################################################
     # Scan
     #
     logger.debug('Scanning...')
     hosts = list()
-    arguments = ''
-    if args.fast:
-        arguments += '-T5'
+    nmap_arguments = '' if not args.fast else '-T5'
     nm = nmap.PortScanner()
-    scan = nm.scan(args.hosts, '22', arguments=arguments)
+    scan = nm.scan(args.hosts, '22', arguments=nmap_arguments)
     stats = scan.get('nmap').get('scanstats')
     logger.debug(
-        '{up} hosts up, {total} total. Scaned in {elapsed_time}s'.format(
+        '{up} hosts up, {total} total in {elapsed_time}s'.format(
             up=stats.get('uphosts'),
             total=stats.get('totalhosts'),
             elapsed_time=stats.get('elapsed')
@@ -73,7 +95,7 @@ if __name__ == '__main__':
     ###########################################################################
     # Test credentials
     #
-    logging.debug('Testing credentials...')
+    logger.debug('Testing credentials...')
     for host in hosts:
         start_time = time()
         ssh = paramiko.SSHClient()
@@ -84,6 +106,10 @@ if __name__ == '__main__':
                 username=args.username,
                 password=args.password
             )
+
+            if args.batch:
+                print(out(host, args.username, args.password))
+
             logger.info('{host} Logged in with {username}:{password} in {elapsed_time}s'.format(
                 host=host,
                 username=args.username,

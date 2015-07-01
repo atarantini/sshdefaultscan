@@ -195,17 +195,6 @@ Author
 
 Andres Tarantini (atarantini@gmail.com)
 
-To Do
------
-
-* Batch mode:
-    * Create out(host, username, password) function that will print if --batch is True.
-    * --batch-output-template will use custom template, default: "{host}:{username}:{password}"
-    * python sshdefaultscan.py --fast --batch 190.49.41.57-59 | xargs -n 1 ping -c 1 | grep icmp_
-* CSV output
-    * Can be implemented with --batch-csv and will be a shortcut to "{host};{username};{password}"
-* Callback (after-login)
-    * Document ``$ python sshdefaultscan.py --batch --batch-template {host} | xargs callback`` to show how to do a callback
 
 License
 -------

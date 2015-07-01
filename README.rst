@@ -177,14 +177,17 @@ don't do anything harmful :)
 Changelog
 ---------
 
+``0.2.0`` - 2015-06-30
+    * Batch mode can be used with the ``--batch`` option.
+
 ``0.1.3`` - 2015-06-19
     * Fixed logger: was using default username and password, now is using the ones sent by the user.
 
 ``0.1.2`` - 2015-06-13
-    * Added --fast parameter to allow faster scans reducing timeouts (`T5 Nmap template <http://nmap.org/book/man-performance.html>`_).
+    * Added ``--fast`` parameter to allow faster scans reducing timeouts (`T5 Nmap template <http://nmap.org/book/man-performance.html>`_).
 
 ``0.1.1`` - 2015-06-08
-    * Added --username and --password parameters to set default username and password.
+    * Added ``--username`` and ``--password`` parameters to set default username and password.
 
 ``0.1.0`` - 2015-06-07
     * Initial release.
@@ -199,7 +202,7 @@ Andres Tarantini (atarantini@gmail.com)
 License
 -------
 
-Released under GNU GPLv3, see COPYING file for more details.
+Released under GNU GPLv3, see `COPYING <https://github.com/atarantini/sshdefaultscan/blob/master/COPYING>`_ file for more details.
 
 .. _Nmap: http://nmap.org/
 .. _Paramiko: http://www.paramiko.org/

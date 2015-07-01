@@ -10,7 +10,7 @@ powerfull target selection and `Paramiko`_ to test credentials.
 
 .. contents::
     :local:
-    :depth: 1
+    :depth: 2
     :backlinks: none
 
 Usage
@@ -82,6 +82,7 @@ All the stuff:
       -p PASSWORD, --password PASSWORD
                             Set password, default is "root"
       --fast                Change timeout settings for the scanner in order to scan faster (T5)
+      --batch               Output only hosts, handy to use with unix pipes.
 
 Install
 -------
@@ -115,8 +116,11 @@ file using ``pip``:
 If the project get some stars, I will upload it to the `The Python Package Index`_.
 
 
+Other features
+--------------
+
 Logging
--------
+^^^^^^^
 
 All important information is stored in ``sshdefaultscan.log``:
 
@@ -126,15 +130,48 @@ All important information is stored in ``sshdefaultscan.log``:
     2015-06-05 22:08:13,660 - sshdefaultscan - INFO - 192.100.100.166 Logged in with root:root in 13.99s
     2015-06-08 21:19:46,295 - sshdefaultscan - INFO - 10.0.1.170 Logged in with root:root in 14.26s
 
+Batch mode
+^^^^^^^^^^
 
-Disclamer
----------
+If you want to combine ``sshdefaultscan`` with other tools or make reports, you
+can use the ``--batch`` option. When running in batch mode, ``sshdefaultscan``
+will print results to stdout and will suppress logging in the terminal (logging
+into file will not be disabled by this option).
+
+.. code-block:: bash
+
+    $ python sshdefaultscan.py --batch 10.0.1-254.1-254
+    10.0.3.2
+    10.0.3.9
+    10.0.100.24
+    10.0.211.19
+
+Use it with other tools, let's see the latency with this hosts using ``ping``:
+
+.. code-block:: bash
+
+    $ python sshdefaultscan.py --batch 10.0.3.1-254 | xargs -n 1 ping -c 1 | grep icmp_
+    64 bytes from 10.0.3.2: icmp_seq=1 ttl=50 time=24 ms
+    64 bytes from 10.0.3.9: icmp_seq=1 ttl=50 time=26 ms
+
+Get hostname from an IP address using ``host``:
+
+.. code-block:: bash
+
+    $ python sshdefaultscan.py --batch 192.168.1.1-254 | xargs -n 1 host
+    1.1.168.192.in-addr.arpa domain name pointer ROUTER.
+    11.1.168.192.in-addr.arpa domain name pointer hostA.
+    16.1.168.192.in-addr.arpa domain name pointer android-67d82275b133e285
+
+
+Disclaimer
+----------
 
 This software is provided for educational purposes and testing only: use it in
 your own network or with permission from the network owner. I'm not responsible
-of what actions people decide to take using this software. I'm not not
-responsible if someone do something against the law using this sofware. Please
-be good and don't do anything harmful.
+of what actions people decide to take using this software. I'm not not responsible
+if someone do something against the law using this software. Please be good and
+don't do anything harmful :)
 
 
 Changelog
@@ -158,6 +195,17 @@ Author
 
 Andres Tarantini (atarantini@gmail.com)
 
+To Do
+-----
+
+* Batch mode:
+    * Create out(host, username, password) function that will print if --batch is True.
+    * --batch-output-template will use custom template, default: "{host}:{username}:{password}"
+    * python sshdefaultscan.py --fast --batch 190.49.41.57-59 | xargs -n 1 ping -c 1 | grep icmp_
+* CSV output
+    * Can be implemented with --batch-csv and will be a shortcut to "{host};{username};{password}"
+* Callback (after-login)
+    * Document ``$ python sshdefaultscan.py --batch --batch-template {host} | xargs callback`` to show how to do a callback
 
 License
 -------

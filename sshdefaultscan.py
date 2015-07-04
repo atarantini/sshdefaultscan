@@ -13,9 +13,10 @@ import paramiko
 
 SSH_DEFAULT_USERNAME = 'root'
 SSH_DEFAULT_PASSWORD = 'root'
+BATCH_TEMPLATE_DEFAULT = '{host}'
 
 
-def out(hostname, username, password, template="{host}"):
+def out(hostname, username, password, template='{host}'):
     """
     Return a string to be used as output when "--batch" mode is enabled
 
@@ -48,8 +49,13 @@ if __name__ == '__main__':
     parser.add_argument('-u', '--username', help='Set username, default is "root".', default=SSH_DEFAULT_USERNAME)
     parser.add_argument('-p', '--password', help='Set password, default is "root".', default=SSH_DEFAULT_PASSWORD)
     parser.add_argument('--fast', help='Change timeout settings for the scanner in order to scan faster (T5).', default=False, action='store_true')
-    parser.add_argument('--batch', help='Output only hosts, handy to use with unix pipes.', default=False, action='store_true')
+    parser.add_argument('--batch', help='Batch mode will only output hosts, handy to use with unix pipes.', default=False, action='store_true')
+    parser.add_argument('--batch-template', help='Change batch mode output template, default is "{host}". Available context variables: host, username, password. Ex: "{username}@{host}" will return "root@192.168.0.1" as output when running in batch mode.', default=BATCH_TEMPLATE_DEFAULT)
     args = parser.parse_args()
+
+    # If "--batch-template" is sent, assume that the user wants batch mode
+    if args.batch_template != BATCH_TEMPLATE_DEFAULT:
+        args.batch = True
 
     # Setup logging
     logger = logging.getLogger('sshdefaultscan')
@@ -72,9 +78,12 @@ if __name__ == '__main__':
     #
     logger.debug('Scanning...')
     hosts = list()
-    nmap_arguments = '' if not args.fast else '-T5'
+
+    nmap_arguments = ['-n']
+    if args.fast:
+        nmap_arguments.append('-T5')
     nm = nmap.PortScanner()
-    scan = nm.scan(args.hosts, '22', arguments=nmap_arguments)
+    scan = nm.scan(args.hosts, '22', arguments=' '.join(nmap_arguments))
     stats = scan.get('nmap').get('scanstats')
     logger.debug(
         '{up} hosts up, {total} total in {elapsed_time}s'.format(
@@ -108,7 +117,7 @@ if __name__ == '__main__':
             )
 
             if args.batch:
-                print(out(host, args.username, args.password))
+                print(out(host, args.username, args.password, template=args.batch_template))
 
             logger.info('{host} Logged in with {username}:{password} in {elapsed_time}s'.format(
                 host=host,

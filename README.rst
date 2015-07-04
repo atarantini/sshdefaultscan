@@ -1,6 +1,6 @@
-**************
+=============
 sshdefaultscan
-**************
+==============
 
 **Scan networks for SSH servers with default username and password.**
 
@@ -175,7 +175,7 @@ Advanced
 """"""""
 
 Sometime having only the hostname is not enough and a custom output is needed. When
-using the `--batch-template` option a custom template can be set.
+using ``--batch-template`` option a custom template can be set.
 
 Export to CSV:
 
@@ -184,11 +184,11 @@ Export to CSV:
     $ python sshdefaultscan.py --batch --batch-template "{host},{username},{password}" 192.168.1.1-254 > scan.csv
 
 The template uses `Python's string.format() <https://docs.python.org/2/library/string.html#formatstrings>`_ with
-this parameters (in order):
+this parameters:
 
-    * host
-    * username
-    * password
+* host
+* username
+* password
 
 
 Disclaimer

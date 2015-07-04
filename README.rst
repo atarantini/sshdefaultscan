@@ -206,6 +206,10 @@ don't do anything harmful :)
 Changelog
 ---------
 
+``0.2.1`` - 2015-07-03
+    * Batch mode custom output with ``--batch-template``.
+    * Improved scan speed (in both normal and ``--fast``) by disabling reverse DNS resolution.
+
 ``0.2.0`` - 2015-06-30
     * Batch mode can be used with the ``--batch`` option.
 

@@ -53,6 +53,10 @@ if __name__ == '__main__':
     parser.add_argument('--batch-template', help='Change batch mode output template, default is "{host}". Available context variables: host, username, password. Ex: "{username}@{host}" will return "root@192.168.0.1" as output when running in batch mode.', default=BATCH_TEMPLATE_DEFAULT)
     args = parser.parse_args()
 
+    # If "--batch-template" is sent, assume that the user wants batch mode
+    if args.batch_template != BATCH_TEMPLATE_DEFAULT:
+        args.batch = True
+
     # Setup logging
     logger = logging.getLogger('sshdefaultscan')
     logger.setLevel(logging.DEBUG)

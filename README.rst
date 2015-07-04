@@ -174,14 +174,13 @@ Get hostname from an IP address using ``host``:
 Advanced
 """"""""
 
-Sometime having only the hostname is not enough and a custom output is needed. When
-using ``--batch-template`` option a custom template can be set.
-
-Export to CSV:
+Sometime having only the hostname is not enough and a custom output is needed.
+When using ``--batch-template`` option a custom template can be set. For example,
+let's export the scan results to a CSV file:
 
 .. code-block:: bash
 
-    $ python sshdefaultscan.py --batch --batch-template "{host},{username},{password}" 192.168.1.1-254 > scan.csv
+    $ python sshdefaultscan.py --batch-template "{host},{username},{password}" 192.168.1.1-254 > scan.csv
 
 The template uses `Python's string.format() <https://docs.python.org/2/library/string.html#formatstrings>`_ with
 this parameters:
@@ -189,6 +188,9 @@ this parameters:
 * host
 * username
 * password
+
+There is no need to use ``--batch`` when ``--batch-template`` is used, **sshdefaultscan** will assume that
+you want to run in batch mode.
 
 
 Disclaimer

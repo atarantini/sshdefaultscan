@@ -83,6 +83,11 @@ All the stuff:
                             Set password, default is "root"
       --fast                Change timeout settings for the scanner in order to scan faster (T5)
       --batch               Output only hosts, handy to use with unix pipes.
+      --batch-template BATCH_TEMPLATE
+                            Change batch mode output template, default is "{host}". Available
+                            context variables: host, username, password. Ex: "{username}@{host}"
+                            will return "root@192.168.0.1" as output when running in batch mode.
+
 
 Install
 -------
@@ -138,6 +143,9 @@ can use the ``--batch`` option. When running in batch mode, ``sshdefaultscan``
 will print results to stdout and will suppress logging in the terminal (logging
 into file will not be disabled by this option).
 
+Basic
+"""""
+
 .. code-block:: bash
 
     $ python sshdefaultscan.py --batch 10.0.1-254.1-254
@@ -162,6 +170,25 @@ Get hostname from an IP address using ``host``:
     1.1.168.192.in-addr.arpa domain name pointer ROUTER.
     11.1.168.192.in-addr.arpa domain name pointer hostA.
     16.1.168.192.in-addr.arpa domain name pointer android-67d82275b133e285
+
+Advanced
+""""""""
+
+Sometime having only the hostname is not enough and a custom output is needed. When
+using the `--batch-template` option a custom template can be set.
+
+Export to CSV:
+
+.. code-block:: bash
+
+    $ python sshdefaultscan.py --batch --batch-template "{host},{username},{password}" 192.168.1.1-254 > scan.csv
+
+The template uses `Python's string.format() <https://docs.python.org/2/library/string.html#formatstrings>`_ with
+this parameters (in order):
+
+    * host
+    * username
+    * password
 
 
 Disclaimer

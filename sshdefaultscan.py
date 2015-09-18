@@ -116,7 +116,8 @@ if __name__ == '__main__':
             ssh.connect(
                 host,
                 username=args.username,
-                password=args.password
+                password=args.password,
+                port=int(args.port)
             )
 
             if args.batch:

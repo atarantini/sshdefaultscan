@@ -6,6 +6,7 @@ Scan networks for SSH servers with default username and password.
 """
 import argparse
 import logging
+import socket
 from time import time
 
 import nmap
@@ -129,7 +130,8 @@ if __name__ == '__main__':
             ))
         except (
             paramiko.ssh_exception.AuthenticationException,
-            paramiko.ssh_exception.SSHException
+            paramiko.ssh_exception.SSHException,
+            socket.error
         ) as e:
             logger.debug('{host} {exception} ({elapsed_time}s)'.format(
                 host=host,

@@ -11,6 +11,7 @@ powerfull target selection and `Paramiko`_ to test credentials.
 
 Documentation
 -------------
+
 .. contents::
     :local:
     :depth: 2
@@ -30,7 +31,7 @@ Scan your own machine:
     2015-06-08 21:17:03,892 - sshdefaultscan - DEBUG - 127.0.0.1 Seems to have SSH open
     2015-06-08 21:17:06,001 - sshdefaultscan - INFO - 127.0.0.1 Logged in with root:root in 2.11s
 
-You local network, with ``--fast`` to improve speed:
+Your local network, with ``--fast`` to improve speed:
 
 .. code-block:: bash
 

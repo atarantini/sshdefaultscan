@@ -8,6 +8,9 @@ Use **sshdefaultscan** to scan networks or hosts for SSH servers, try to connect
 using some default username and password. It uses `Nmap`_ to provide easy and
 powerfull target selection and `Paramiko`_ to test credentials.
 
+
+Documentation
+-------------
 .. contents::
     :local:
     :depth: 2
@@ -68,25 +71,39 @@ All the stuff:
 
 .. code-block:: bash
 
-    sshdefaultscan.py [-h] [-u USERNAME] [-p PASSWORD] hosts
+    usage: sshdefaultscan.py [-h] [--username USERNAME] [--password PASSWORD]
+                             [--port PORT] [--fast] [--batch]
+                             [--batch-template BATCH_TEMPLATE]
+                             hosts
+
+    Scan networks for SSH servers with default username and password.
 
     positional arguments:
       hosts                 An IP address for a hostname or network, ex:
                             192.168.1.1 for single host or 192.168.1.1-254 for
-                            network
+                            network.
 
     optional arguments:
-      -h, --help            Show this help message and exit
-      -u USERNAME, --username USERNAME
-                            Set username, default is "root"
-      -p PASSWORD, --password PASSWORD
-                            Set password, default is "root"
-      --fast                Change timeout settings for the scanner in order to scan faster (T5)
-      --batch               Output only hosts, handy to use with unix pipes.
+      -h, --help            show this help message and exit
+
+      --username USERNAME   Set username, default is "root".
+
+      --password PASSWORD   Set password, default is "root".
+
+      --port PORT           Set port, default is 22.
+
+      --fast                Change timeout settings for the scanner in order to
+                            scan faster (T5).
+
+      --batch               Batch mode will only output hosts, handy to use with
+                            unix pipes.
+
       --batch-template BATCH_TEMPLATE
-                            Change batch mode output template, default is "{host}". Available
-                            context variables: host, username, password. Ex: "{username}@{host}"
-                            will return "root@192.168.0.1" as output when running in batch mode.
+                            Change batch mode output template, default is
+                            "{host}". Available context variables: host, username,
+                            password. Ex: "{username}@{host}" will return
+                            "root@192.168.0.1" as output when running in batch
+                            mode.
 
 
 Install
@@ -205,6 +222,10 @@ don't do anything harmful :)
 
 Changelog
 ---------
+
+``0.3.0`` - 2015-09-17
+    * Added ``--port`` parameter to set custom SSH port.
+    * Handle socket error when making SSH connection.
 
 ``0.2.1`` - 2015-07-03
     * Batch mode custom output with ``--batch-template``.

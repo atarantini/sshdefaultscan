@@ -6,6 +6,7 @@ Scan networks for SSH servers with default username and password.
 """
 import argparse
 import logging
+import socket
 from time import time
 
 import nmap
@@ -16,7 +17,7 @@ SSH_DEFAULT_PASSWORD = 'root'
 BATCH_TEMPLATE_DEFAULT = '{host}'
 
 
-def out(hostname, username, password, template='{host}'):
+def out(hostname, username, password, port, template='{host}'):
     """
     Return a string to be used as output when "--batch" mode is enabled
 
@@ -32,7 +33,8 @@ def out(hostname, username, password, template='{host}'):
     return template.format(
         host=hostname,
         username=username,
-        password=password
+        password=password,
+        port=port
     )
 
 #
@@ -46,8 +48,9 @@ if __name__ == '__main__':
     # Parse command line arguments
     parser = argparse.ArgumentParser(description='Scan networks for SSH servers with default username and password.')
     parser.add_argument('hosts', help='An IP address for a hostname or network, ex: 192.168.1.1 for single host or 192.168.1.1-254 for network.')
-    parser.add_argument('-u', '--username', help='Set username, default is "root".', default=SSH_DEFAULT_USERNAME)
-    parser.add_argument('-p', '--password', help='Set password, default is "root".', default=SSH_DEFAULT_PASSWORD)
+    parser.add_argument('--username', help='Set username, default is "root".', default=SSH_DEFAULT_USERNAME)
+    parser.add_argument('--password', help='Set password, default is "root".', default=SSH_DEFAULT_PASSWORD)
+    parser.add_argument('--port', help='Set port, default is 22.', default='22')
     parser.add_argument('--fast', help='Change timeout settings for the scanner in order to scan faster (T5).', default=False, action='store_true')
     parser.add_argument('--batch', help='Batch mode will only output hosts, handy to use with unix pipes.', default=False, action='store_true')
     parser.add_argument('--batch-template', help='Change batch mode output template, default is "{host}". Available context variables: host, username, password. Ex: "{username}@{host}" will return "root@192.168.0.1" as output when running in batch mode.', default=BATCH_TEMPLATE_DEFAULT)
@@ -83,7 +86,7 @@ if __name__ == '__main__':
     if args.fast:
         nmap_arguments.append('-T5')
     nm = nmap.PortScanner()
-    scan = nm.scan(args.hosts, '22', arguments=' '.join(nmap_arguments))
+    scan = nm.scan(args.hosts, args.port, arguments=' '.join(nmap_arguments))
     stats = scan.get('nmap').get('scanstats')
     logger.debug(
         '{up} hosts up, {total} total in {elapsed_time}s'.format(
@@ -93,12 +96,12 @@ if __name__ == '__main__':
         )
     )
     for host, data in list(scan.get('scan').items()):
-        if data.get('tcp') and data.get('tcp').get(22).get('state') == 'open':
+        if data.get('tcp') and data.get('tcp').get(int(args.port)).get('state') == 'open':
             hosts.append(host)
             logger.debug('{host} Seems to have SSH open'.format(host=host))
 
     if not hosts:
-        logger.debug('No hosts found with port 22 open.')
+        logger.debug('No hosts found with port {port} open.'.format(port=args.port))
         exit()
 
     ###########################################################################
@@ -113,11 +116,12 @@ if __name__ == '__main__':
             ssh.connect(
                 host,
                 username=args.username,
-                password=args.password
+                password=args.password,
+                port=int(args.port)
             )
 
             if args.batch:
-                print(out(host, args.username, args.password, template=args.batch_template))
+                print(out(host, args.username, args.password, args.port, template=args.batch_template))
 
             logger.info('{host} Logged in with {username}:{password} in {elapsed_time}s'.format(
                 host=host,
@@ -127,7 +131,8 @@ if __name__ == '__main__':
             ))
         except (
             paramiko.ssh_exception.AuthenticationException,
-            paramiko.ssh_exception.SSHException
+            paramiko.ssh_exception.SSHException,
+            socket.error
         ) as e:
             logger.debug('{host} {exception} ({elapsed_time}s)'.format(
                 host=host,

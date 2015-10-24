@@ -9,9 +9,10 @@ using some default username and password. It uses `Nmap`_ to provide easy and
 powerfull target selection and `Paramiko`_ to test credentials.
 
 **Full documentation at** http://sshdefaultscan.readthedocs.org/
+
 .. image:: https://readthedocs.org/projects/sshdefaultscan/badge/?version=stable
-    :target: http://sshdefaultscan.readthedocs.org/en/latest/?badge=stable
-    :alt: Documentation Status
+:target: http://sshdefaultscan.readthedocs.org/en/latest/?badge=stable
+:alt: Documentation Status
 
 Usage
 -----

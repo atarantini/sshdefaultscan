@@ -1,8 +1,8 @@
 Features
---------
+========
 
 Logging
-^^^^^^^
+-------
 
 All important information is stored in ``sshdefaultscan.log``:
 
@@ -13,7 +13,7 @@ All important information is stored in ``sshdefaultscan.log``:
     2015-06-08 21:19:46,295 - sshdefaultscan - INFO - 10.0.1.170 Logged in with root:root in 14.26s
 
 Batch mode
-^^^^^^^^^^
+----------
 
 If you want to combine ``sshdefaultscan`` with other tools or make reports, you
 can use the ``--batch`` option. When running in batch mode, ``sshdefaultscan``
@@ -52,8 +52,9 @@ Advanced
 """"""""
 
 Sometime having only the hostname is not enough and a custom output is needed.
-When using ``--batch-template`` option a custom template can be set. For example,
-let's export the scan results to a CSV file:
+When using ``--batch-template`` option a custom template can be set.
+
+For example, let's export the scan results to a CSV file:
 
 .. code-block:: bash
 

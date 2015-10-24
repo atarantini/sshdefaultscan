@@ -1,4 +1,7 @@
 Usage
+=====
+
+Basic
 -----
 
 Scan your own machine:
@@ -49,9 +52,13 @@ Or a much bigger network segment:
     2015-06-08 21:25:20,436 - sshdefaultscan - DEBUG - 192.168.110.182 Authentication failed. (1.39s)
     ...
 
-All the stuff:
+
+Complete list of arguments
+--------------------------
 
 .. code-block:: bash
+
+    $ python sshdefaultscan.py -h
 
     usage: sshdefaultscan.py [-h] [--username USERNAME] [--password PASSWORD]
                              [--port PORT] [--fast] [--batch]
@@ -61,9 +68,8 @@ All the stuff:
     Scan networks for SSH servers with default username and password.
 
     positional arguments:
-      hosts                 An IP address for a hostname or network, ex:
-                            192.168.1.1 for single host or 192.168.1.1-254 for
-                            network.
+      hosts                 An IP address for a hostname or network, ex: 192.168.1.1
+                            for single host or 192.168.1.1-254 for network.
 
     optional arguments:
       -h, --help            show this help message and exit
@@ -84,8 +90,4 @@ All the stuff:
                             Change batch mode output template, default is
                             "{host}". Available context variables: host, username,
                             password. Ex: "{username}@{host}" will return
-                            "root@192.168.0.1" as output when running in batch
-                            mode.
-
-
-
+                            "root@192.168.0.1" as output when running in batch mode.

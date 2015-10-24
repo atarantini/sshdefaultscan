@@ -1,5 +1,5 @@
 Install
--------
+=======
 
 You will need to have `Nmap`_ installed. If you are on Debian/Ubuntu, this should
 do all the work:

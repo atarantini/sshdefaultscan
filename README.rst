@@ -10,7 +10,7 @@ powerfull target selection and `Paramiko`_ to test credentials.
 
 **Full documentation at** http://sshdefaultscan.readthedocs.org/
 
-.. image:: https://readthedocs.org/projects/sshdefaultscan/badge/?version=stable
+.. image:: https://readthedocs.org/projects/sshdefaultscan/badge/?version=latest
 
 
 Usage

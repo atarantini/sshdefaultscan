@@ -1,0 +1,8 @@
+*.pyc
+*.log
+env/
+env3/
+.idea/
+docs/_templates/
+docs/_build/
+docs/_static/

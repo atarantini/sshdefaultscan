@@ -1,19 +1,7 @@
-====================
-sshdefaultscan 0.4.0
-====================
-
-**Scan networks for SSH servers with default username and password.**
-
-Use **sshdefaultscan** to scan networks or hosts for SSH servers, try to connect
-using some default username and password. It uses `Nmap`_ to provide easy and
-powerfull target selection and `Paramiko`_ to test credentials.
-
-**Full documentation at** http://sshdefaultscan.readthedocs.org/
-.. image:: https://readthedocs.org/projects/sshdefaultscan/badge/?version=stable
-    :target: http://sshdefaultscan.readthedocs.org/en/latest/?badge=stable
-    :alt: Documentation Status
-
 Usage
+=====
+
+Basic
 -----
 
 Scan your own machine:
@@ -64,30 +52,42 @@ Or a much bigger network segment:
     2015-06-08 21:25:20,436 - sshdefaultscan - DEBUG - 192.168.110.182 Authentication failed. (1.39s)
     ...
 
-See full documentation at http://sshdefaultscan.readthedocs.org/
 
+Complete list of arguments
+--------------------------
 
-Disclaimer
-----------
+.. code-block:: bash
 
-This software is provided for educational purposes and testing only: use it in
-your own network or with permission from the network owner. I'm not responsible
-of what actions people decide to take using this software. I'm not responsible
-if someone do something against the law using this software. Please be good and
-don't do anything harmful :)
+    $ python sshdefaultscan.py -h
 
+    usage: sshdefaultscan.py [-h] [--username USERNAME] [--password PASSWORD]
+                             [--port PORT] [--fast] [--batch]
+                             [--batch-template BATCH_TEMPLATE]
+                             hosts
 
-Author
-------
+    Scan networks for SSH servers with default username and password.
 
-Andres Tarantini (atarantini@gmail.com)
+    positional arguments:
+      hosts                 An IP address for a hostname or network, ex: 192.168.1.1
+                            for single host or 192.168.1.1-254 for network.
 
+    optional arguments:
+      -h, --help            show this help message and exit
 
-License
--------
+      --username USERNAME   Set username, default is "root".
 
-Released under GNU GPLv3, see `COPYING <https://github.com/atarantini/sshdefaultscan/blob/master/COPYING>`_ file for more details.
+      --password PASSWORD   Set password, default is "root".
 
-.. _Nmap: http://nmap.org/
-.. _Paramiko: http://www.paramiko.org/
-.. _`The Python Package Index`: https://pypi.python.org/pypi
+      --port PORT           Set port, default is 22.
+
+      --fast                Change timeout settings for the scanner in order to
+                            scan faster (T5).
+
+      --batch               Batch mode will only output hosts, handy to use with
+                            unix pipes.
+
+      --batch-template BATCH_TEMPLATE
+                            Change batch mode output template, default is
+                            "{host}". Available context variables: host, username,
+                            password. Ex: "{username}@{host}" will return
+                            "root@192.168.0.1" as output when running in batch mode.
